@@ -61,7 +61,7 @@ module.exports.validateReview = (req, res, next) => {
 module.exports.isOwner = async (req, res, next) => {
     let { id } = req.params;
     let listing = await Listing.findById(id);
-    if (!listing.owner._id.equals(req.locals.currUser._id)) {
+    if (!listing.owner._id.equals(req.user._id)) {
         req.flash("error", "Your are not the owner of this listing!!");
         return res.redirect(`/listings/${id}`);
     }
