@@ -9,9 +9,8 @@ const listingSchema = new Schema({
     },
     description: String,
     image: {
-        type: String,
-        default: "https://images.freeimages.com/images/large-previews/24d/serene-mountain-lake-0410-5702987.jpg",
-        set: (v) => (v === "" ? "https://images.freeimages.com/images/large-previews/24d/serene-mountain-lake-0410-5702987.jpg" : v)
+        url: String,
+        filename: String,
     },
     price: Number,
     location: String,
