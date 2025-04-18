@@ -1,6 +1,7 @@
 <% layout("/layouts/boilerplate") %>
 <script>
-const mapToken = "<%= process.env.MAP_TOKEN %>";
+  const mapToken = "<%= process.env.MAP_TOKEN %>";
+  const listing = <%- JSON.stringfy(listing) %>;
 </script>
 <h1></h1>
 <div class="row mt-3">

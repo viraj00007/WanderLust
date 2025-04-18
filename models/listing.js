@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Review = require('./review.js');
+const { Cookie } = require('express-session');
 
 const listingSchema = new Schema({
     title: {
@@ -26,10 +27,22 @@ const listingSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
     },
+
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true,
+        },
+        coordinates: {
+            type: [Number],
+            required: true,
+        },
+    },
 });
 
 
-listingSchema.post("findOneDelete", async (listing) => {
+listingSchema.post("findOneAndDelete", async (listing) => {
     if (listing) {
         await Review.deleteMany({ _id: { $in: listing.reviews } });
     }
