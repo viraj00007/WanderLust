@@ -33,20 +33,30 @@ module.exports.showListing = async (req, res) => {
 
 
 module.exports.createListing = async (req, res, next) => {
+    console.log("Inside POST /listings");
     try {
+        console.log("req.body:", req.body); 
+        console.log("req.file:", req.file);
+
+        if (!req.file) throw new Error("No file uploaded");
+
         let response = await geocodingClient
             .forwardGeocode({
                 query: req.body.listing.location,
-                limit: 1,
+                limit: 1,   
             })
             .send();
 
-        let url = req.file.path;
-        let filename = req.file.filename;
+        if (!response.body.features.length) {
+            throw new Error("Invalid location");
+        }
 
         const newListing = new Listing(req.body.listing);
         newListing.owner = req.user._id;
-        newListing.image = { url, filename };
+        newListing.image = {
+            url: req.file.path,
+            filename: req.file.filename
+        };
         newListing.geometry = response.body.features[0].geometry;
 
         let savedListing = await newListing.save();
@@ -55,11 +65,10 @@ module.exports.createListing = async (req, res, next) => {
         req.flash("success", "New Listing Created!!");
         res.redirect("/listings");
     } catch (err) {
-        console.error("Error in creating listing:", err);
+        console.error("Error in createListing:", err);
         next(err);
     }
 };
-
 module.exports.renderEditForm = async (req, res) => {
     let { id } = req.params;
     const listing = await Listing.findById(id);
